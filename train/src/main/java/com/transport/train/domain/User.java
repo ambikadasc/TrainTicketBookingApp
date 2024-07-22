@@ -6,6 +6,15 @@ public class User {
     private String firstName;
     private String lastName;
     private String email;
+    private String seat;
+
+    public String getSeat() {
+        return seat;
+    }
+
+    public void setSeat(String seat) {
+        this.seat = seat;
+    }
 
     public String getFirstName() {
         return firstName;
@@ -31,9 +40,10 @@ public class User {
         this.email = email;
     }
 
-    public User(String firstName, String lastName, String email) {
+    public User(String firstName, String lastName, String email, String seat) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.seat = seat;
     }
 }

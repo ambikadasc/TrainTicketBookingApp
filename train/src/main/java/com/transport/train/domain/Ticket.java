@@ -4,10 +4,9 @@ package com.transport.train.domain;
 public class Ticket {
     private String from;
     private String to;
-    private double price;
     private User user;
-    private TrainSection section;
-    private int seat;
+    private double price;
+
 
 
     public String getFrom() {
@@ -42,21 +41,10 @@ public class Ticket {
         this.user = user;
     }
 
-    public TrainSection getSection() {
-        return section;
+    public Ticket(String from, String to, User user, double price) {
+        this.from = from;
+        this.to = to;
+        this.user = user;
+        this.price = price;
     }
-
-    public void setSection(TrainSection section) {
-        this.section = section;
-    }
-
-    public int getSeat() {
-        return seat;
-    }
-
-    public void setSeat(int seat) {
-        this.seat = seat;
-    }
-
-
 }

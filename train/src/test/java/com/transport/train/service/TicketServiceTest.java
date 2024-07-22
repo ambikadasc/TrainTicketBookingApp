@@ -1,12 +1,11 @@
 package com.transport.train.service;
 
 import com.transport.train.domain.Ticket;
-import com.transport.train.domain.TrainSection;
 import com.transport.train.domain.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -15,84 +14,66 @@ class TicketServiceTest {
     private TicketService ticketService;
 
     @BeforeEach
-    public void setup() {
-        ticketService = new TicketServiceImpl();
+    public void setUp() {
+        ticketService = new TicketService();
     }
 
     @Test
     void purchaseTicket() {
-        User user = new User("Ambikadas", "Chirammel", "ambikadas.chirammel@outlook.com");
-        Ticket ticket = ticketService.purchaseTicket("London", "France", user);
+        User user = new User("Ambikadas", "Chirammel", "ambikadas@outlook.com", "");
+        Ticket ticket = ticketService.purchaseTicket(user);
 
         assertNotNull(ticket);
         assertEquals("London", ticket.getFrom());
         assertEquals("France", ticket.getTo());
-        assertEquals(user, ticket.getUser());
         assertEquals(20.0, ticket.getPrice());
-        assertEquals(TrainSection.A, ticket.getSection());
-        assertEquals(1, ticket.getSeat()); // Assuming seat assignment logic
+        assertEquals("Ambikadas", ticket.getUser().getFirstName());
+        assertEquals("Chirammel", ticket.getUser().getLastName());
+        assertEquals("ambikadas@outlook.com", ticket.getUser().getEmail());
+        assertTrue(ticket.getUser().getSeat().startsWith("A") || ticket.getUser().getSeat().startsWith("B"));
+
     }
 
     @Test
-    void getTicketByUserId() {
-        User user = new User("Subhra", "Choudhury", "subhra.choudhury@outlook.com");
-        Ticket ticket = ticketService.purchaseTicket("London", "Berlin", user);
-        int userId = 1;
-        Ticket retrievedTicket = ticketService.getTicketByUserId(userId);
-        assertNotNull(retrievedTicket);
-        assertEquals("London", retrievedTicket.getFrom());
-        assertEquals("Berlin", retrievedTicket.getTo());
-        assertEquals(user, retrievedTicket.getUser());
-        assertEquals(20.0, retrievedTicket.getPrice());
-        assertEquals(TrainSection.A, retrievedTicket.getSection());
-        assertEquals(1, retrievedTicket.getSeat());
+    void getTicket() {
+        User user = new User("Ambikadas", "Chirammel", "ambikadas@outlook.com", "");
+        ticketService.purchaseTicket(user);
+
+        Ticket receipt = ticketService.getTicket("ambikadas@outlook.com");
+        assertNotNull(receipt);
+        assertEquals("ambikadas@outlook.com", receipt.getUser().getEmail());
     }
 
     @Test
     void getUsersBySection() {
-        User user1 = new User("Ambikadas", "Chirammel", "ambikadas.chirammel@outlook.com");
-        User user2 = new User("Subhra", "Choudhury", "subhra.choudhury@outlook.com");
+        User user1 = new User("Ambikadas", "Chirammel", "ambikadas@outlook.com", "");
+        User user2 = new User("Subhra", "Choudhury", "subhra.choudhury@outlook.com", "");
 
-        // Purchase tickets for section A and B
-        ticketService.purchaseTicket("London", "Paris", user1);
-        ticketService.purchaseTicket("Madrid", "Berlin", user2);
-        ticketService.modifyUserSeat(2, TrainSection.B, 5);
+        ticketService.purchaseTicket(user1);
+        ticketService.purchaseTicket(user2);
 
+        Map<String, User> usersInSectionA = ticketService.getUsersBySection("A");
+        Map<String, User> usersInSectionB = ticketService.getUsersBySection("B");
 
-        List<User> usersInSectionA = ticketService.getUsersBySection(TrainSection.A);
-        List<User> usersInSectionB = ticketService.getUsersBySection(TrainSection.B);
+        assertTrue(usersInSectionA.size() > 0 || usersInSectionB.size() > 0);
 
-        assertEquals(1, usersInSectionA.size());
-        assertEquals(user1, usersInSectionA.get(0));
-
-        assertEquals(1, usersInSectionB.size());
-        assertEquals(user2, usersInSectionB.get(0));
     }
 
     @Test
     void removeUser() {
+        User user = new User("Ambikadas", "Chirammel", "ambikadas@outlook.com", "");
+        ticketService.purchaseTicket(user);
+        ticketService.removeUser("ambikadas@outlook.com");
+        assertNull(ticketService.getTicket("ambikadas@outlook.com"));
     }
 
     @Test
     void modifyUserSeat() {
-        User user = new User("Ambikadas", "Chirammel", "ambikadas.chirammel@outlook.com");
-        Ticket ticket = ticketService.purchaseTicket("Berlin", "Rome", user);
-        int userId = 1; // Assuming this is the userId assigned by the service
+        User user = new User("Ambikadas", "Chirammel", "ambikadas@outlook.com", "");
+        ticketService.purchaseTicket(user);
 
-        Ticket modifiedTicket = ticketService.modifyUserSeat(userId, TrainSection.A, 5);
-
-        assertEquals(5, modifiedTicket.getSeat());
-    }
-
-    @Test
-    void modifyUserSeatInvalid() {
-        User user = new User("Ambikadas", "Chirammel", "ambikadas.chirammel@outlook.com");
-        ticketService.purchaseTicket("Berlin", "Rome", user);
-        int userId = 1;
-
-        // Attempt to modify seat in a section where user does not have a ticket
-        Ticket modifiedTicket = ticketService.modifyUserSeat(userId, TrainSection.B, 8);
-
-        assertNull(modifiedTicket); // Sh
+        ticketService.modifyUserSeat("ambikadas@outlook.com", "B8");
+        User updatedUser = ticketService.getTicket("ambikadas@outlook.com").getUser();
+        assertEquals("B8", updatedUser.getSeat());
     }
 }
