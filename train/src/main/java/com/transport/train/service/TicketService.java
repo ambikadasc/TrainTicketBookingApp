@@ -3,10 +3,12 @@ package com.transport.train.service;
 import com.transport.train.domain.InMemoryRepository;
 import com.transport.train.domain.Ticket;
 import com.transport.train.domain.User;
+import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Service
 public class TicketService {
     private InMemoryRepository repository = new InMemoryRepository();
     private static final double TICKET_PRICE = 20.0;

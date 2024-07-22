@@ -21,7 +21,7 @@ public class TicketController {
         return ticketService.purchaseTicket(user);
     }
 
-    @GetMapping("/receipt/{email}")
+    @GetMapping("/ticket/{email}")
     public Ticket getTicket(@PathVariable String email) {
         return ticketService.getTicket(email);
     }
