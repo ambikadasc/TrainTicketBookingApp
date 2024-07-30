@@ -1,5 +1,6 @@
 package com.transport.train.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.transport.train.domain.InMemoryRepository;
 import com.transport.train.domain.Ticket;
 import com.transport.train.domain.User;
@@ -19,6 +20,7 @@ public class TicketService {
         String seat = allocateSeat();
         user.setSeat(seat);
         repository.addUser(user);
+
 
         Ticket ticket = new Ticket(FROM, TO, user, TICKET_PRICE);
         repository.addTicket(ticket);

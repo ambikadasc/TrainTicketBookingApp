@@ -1,8 +1,17 @@
 package com.transport.train.domain;
 
 
-public class User {
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.io.Serial;
+import java.io.Serializable;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class User implements Serializable {
+
+
+    @Serial
+    private static final long serialVersionUID = 1142278538270437597L;
     private String firstName;
     private String lastName;
     private String email;

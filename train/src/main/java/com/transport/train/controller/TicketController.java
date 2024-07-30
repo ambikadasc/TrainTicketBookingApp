@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/tickets")
+@RequestMapping("api/tickets/")
 public class TicketController {
 
     @Autowired
@@ -22,6 +22,7 @@ public class TicketController {
     }
 
     @GetMapping("/ticket/{email}")
+    @ResponseBody
     public Ticket getTicket(@PathVariable String email) {
         return ticketService.getTicket(email);
     }

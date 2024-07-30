@@ -1,7 +1,9 @@
 package com.transport.train.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.transport.train.domain.Ticket;
 import com.transport.train.domain.User;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +23,10 @@ class TicketServiceTest {
     @Test
     void purchaseTicket() {
         User user = new User("Ambikadas", "Chirammel", "ambikadas@outlook.com", "");
+
+
         Ticket ticket = ticketService.purchaseTicket(user);
+
 
         assertNotNull(ticket);
         assertEquals("London", ticket.getFrom());
@@ -35,10 +40,11 @@ class TicketServiceTest {
     }
 
     @Test
-    void getTicket() {
+    void getTicket() throws JsonProcessingException {
         User user = new User("Ambikadas", "Chirammel", "ambikadas@outlook.com", "");
         ticketService.purchaseTicket(user);
-
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonStr = mapper.writeValueAsString(user);
         Ticket receipt = ticketService.getTicket("ambikadas@outlook.com");
         assertNotNull(receipt);
         assertEquals("ambikadas@outlook.com", receipt.getUser().getEmail());

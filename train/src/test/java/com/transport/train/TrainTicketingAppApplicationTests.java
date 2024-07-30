@@ -10,4 +10,5 @@ class TrainTicketingAppApplicationTests {
 	void contextLoads() {
 	}
 
+
 }
